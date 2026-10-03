@@ -60,7 +60,7 @@
       display: none;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
+      gap: 15px;
       width: 90%;
       max-width: 400px;
     }
@@ -68,14 +68,14 @@
     .typewriter-text {
       font-size: 1.1rem;
       line-height: 1.5;
-      min-height: 80px;
+      min-height: 70px;
       text-align: center;
     }
 
-    /* Desenho da Flor com Canvas */
+    /* Desenho com Canvas */
     canvas {
-      width: 280px;
-      height: 280px;
+      width: 320px;
+      height: 320px;
     }
 
     /* Contador */
@@ -100,7 +100,7 @@
 
   <!-- Tela Inicial -->
   <div id="start-screen" class="screen">
-    <h1>Flores para ti 🌺</h1>
+    <h1>Flores e Gatinhos para ti 🐱🌻</h1>
     <button onclick="startExperience()">ABRIR</button>
   </div>
 
@@ -108,7 +108,7 @@
   <div id="main-content" class="screen">
     <div class="typewriter-text" id="text"></div>
     
-    <canvas id="flowerCanvas" width="300" height="300"></canvas>
+    <canvas id="flowerCanvas" width="320" height="320"></canvas>
 
     <div class="counter-box">
       <div>Meu amor por ti começou em:</div>
@@ -117,8 +117,7 @@
   </div>
 
   <script>
-    // 1. Data de início do namoro/relacionamento (Ano, Mês [0-11], Dia, Hora, Minuto)
-    // Nota: O mês de Novembro é representado pelo número 10 (pois Janeiro é 0)
+    // Data do relacionamento (17 de Novembro de 2025)
     const startDate = new Date(2025, 10, 17, 0, 0, 0); 
 
     function startExperience() {
@@ -126,24 +125,24 @@
       document.getElementById('main-content').style.display = 'flex';
 
       startTypewriter();
-      drawFlowerAnimation();
+      drawAnimation();
       setInterval(updateTimer, 1000);
       updateTimer();
     }
 
-    // 2. Efeito de Texto a Escrever
-    const message = "O meu mundo ficou mais bonito no dia em que te encontrei... e desde então, só cresce o que sinto por ti. I love you.";
+    // Texto de Amor
+    const message = "O meu mundo ficou mais bonito no dia em que te encontrei... e desde então, só cresce o que sinto por ti. I love you! 🐱❤️🌻";
     let index = 0;
 
     function startTypewriter() {
       if (index < message.length) {
         document.getElementById('text').innerHTML += message.charAt(index);
         index++;
-        setTimeout(startTypewriter, 50);
+        setTimeout(startTypewriter, 45);
       }
     }
 
-    // 3. Contador de Tempo
+    // Contador de Tempo
     function updateTimer() {
       const now = new Date();
       const diff = now - startDate;
@@ -157,8 +156,86 @@
         `${days} dias ${hours}h ${minutes}m ${seconds}s`;
     }
 
-    // 4. Desenho Animado do Caule e Coração
-    function drawFlowerAnimation() {
+    // Função para desenhar um Girassol
+    function drawSunflower(ctx, cx, cy, size) {
+      const petals = 12;
+      ctx.fillStyle = '#ffcc00';
+      for (let i = 0; i < petals; i++) {
+        let angle = (i * Math.PI * 2) / petals;
+        let px = cx + Math.cos(angle) * (size * 1.4);
+        let py = cy + Math.sin(angle) * (size * 1.4);
+        
+        ctx.beginPath();
+        ctx.arc(px, py, size / 2.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.beginPath();
+      ctx.fillStyle = '#5c3a21';
+      ctx.arc(cx, cy, size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Função para desenhar um Gatinho Fofo sentado
+    function drawCat(ctx, x, y, scale, flip = false) {
+      ctx.save();
+      ctx.translate(x, y);
+      if (flip) ctx.scale(-1, 1);
+
+      ctx.fillStyle = '#ffb3d9'; // Cor rosa suave para o gatinho
+      
+      // Corpo
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 16 * scale, 25 * scale, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Cabeça
+      ctx.beginPath();
+      ctx.arc(0, -28 * scale, 14 * scale, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Orelha Esquerda
+      ctx.beginPath();
+      ctx.moveTo(-12 * scale, -32 * scale);
+      ctx.lineTo(-4 * scale, -45 * scale);
+      ctx.lineTo(-1 * scale, -34 * scale);
+      ctx.fill();
+
+      // Orelha Direita
+      ctx.beginPath();
+      ctx.moveTo(12 * scale, -32 * scale);
+      ctx.lineTo(4 * scale, -45 * scale);
+      ctx.lineTo(1 * scale, -34 * scale);
+      ctx.fill();
+
+      // Rabinho Curvado
+      ctx.beginPath();
+      ctx.strokeStyle = '#ffb3d9';
+      ctx.lineWidth = 4 * scale;
+      ctx.lineCap = 'round';
+      ctx.moveTo(-12 * scale, 10 * scale);
+      ctx.bezierCurveTo(-30 * scale, 15 * scale, -25 * scale, -10 * scale, -20 * scale, -15 * scale);
+      ctx.stroke();
+
+      // Olhos e Bigodes (brancos)
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5 * scale;
+      // Bigodes esquerdos
+      ctx.beginPath();
+      ctx.moveTo(-5 * scale, -26 * scale); ctx.lineTo(-18 * scale, -28 * scale);
+      ctx.moveTo(-5 * scale, -24 * scale); ctx.lineTo(-18 * scale, -24 * scale);
+      ctx.stroke();
+      // Bigodes direitos
+      ctx.beginPath();
+      ctx.moveTo(5 * scale, -26 * scale); ctx.lineTo(18 * scale, -28 * scale);
+      ctx.moveTo(5 * scale, -24 * scale); ctx.lineTo(18 * scale, -24 * scale);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    // Animação Principal
+    function drawAnimation() {
       const canvas = document.getElementById('flowerCanvas');
       const ctx = canvas.getContext('2d');
       let progress = 0;
@@ -166,31 +243,52 @@
       function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Desenhar Caule Verde
+        // 1. Desenhar Gatinhos nas laterais
+        if (progress > 0.2) {
+          let catAlpha = Math.min((progress - 0.2) / 0.3, 1);
+          ctx.globalAlpha = catAlpha;
+          drawCat(ctx, 45, 275, 0.85, false); // Gatinho Esquerdo
+          drawCat(ctx, 275, 275, 0.85, true);  // Gatinho Direito
+          ctx.globalAlpha = 1.0;
+        }
+
+        // 2. Caule Principal
         ctx.beginPath();
         ctx.strokeStyle = '#2d8a4e';
         ctx.lineWidth = 6;
         ctx.lineCap = 'round';
-        ctx.moveTo(150, 280);
-        
-        let stemHeight = Math.min(progress * 150, 150);
-        ctx.lineTo(150, 280 - stemHeight);
+        ctx.moveTo(160, 290);
+        let stemHeight = Math.min(progress * 160, 160);
+        ctx.lineTo(160, 290 - stemHeight);
         ctx.stroke();
 
-        // Desenhar Ramos Pequenos
+        // 3. Ramos Laterais para Girassóis
         if (progress > 0.4) {
-          ctx.beginPath();
           ctx.lineWidth = 4;
-          ctx.moveTo(150, 220);
-          ctx.lineTo(130, 200);
-          ctx.moveTo(150, 190);
-          ctx.lineTo(170, 170);
+          
+          // Ramo Esquerdo
+          ctx.beginPath();
+          ctx.moveTo(160, 230);
+          ctx.lineTo(100, 185);
+          ctx.stroke();
+
+          // Ramo Direito
+          ctx.beginPath();
+          ctx.moveTo(160, 210);
+          ctx.lineTo(220, 165);
           ctx.stroke();
         }
 
-        // Desenhar Flor em Formato de Coração
+        // 4. Desenhar Girassóis
         if (progress > 0.6) {
-          let heartProgress = (progress - 0.6) / 0.4;
+          let scale = Math.min((progress - 0.6) / 0.3, 1);
+          drawSunflower(ctx, 100, 185, 11 * scale);
+          drawSunflower(ctx, 220, 165, 11 * scale);
+        }
+
+        // 5. Desenhar Coração/Rosa Central
+        if (progress > 0.7) {
+          let heartProgress = (progress - 0.7) / 0.3;
           ctx.beginPath();
           ctx.strokeStyle = '#ff3366';
           ctx.lineWidth = 4;
@@ -199,7 +297,7 @@
           for (let t = 0; t <= Math.PI * 2 * heartProgress; t += 0.05) {
             let x = 16 * Math.pow(Math.sin(t), 3);
             let y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
-            points.push({ x: 150 + x * 4, y: 130 + y * 4 });
+            points.push({ x: 160 + x * 3.5, y: 125 + y * 3.5 });
           }
 
           if (points.length > 0) {
